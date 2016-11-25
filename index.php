@@ -1,10 +1,19 @@
 <?php
 
 require('config/config.php');
-require('classes/auth.php');
+require('classes/db.php');
+require('classes/validator.php');
 require('classes/point.php');
 
 $pointParams = $_GET;
+$canAdd      = Validator::canAdd( $pointParams );
+$point       = new Point( $pointParams );
+
+if ( $canAdd ) {
+    $point->addPoint( $point->db, $point->data );
+} else {
+    $points = $point->getPoints( $point->db );
+}
 
 ?>
 
@@ -18,16 +27,24 @@ $pointParams = $_GET;
     <h1>Breadcrumbs</h1>
     <p>Where am I?</p>
 
-    <?php if ( Auth::canPost( $pointParams ) ) : ?>
+    <?php if ( $canAdd ) : ?>
         <pre><?php print_r( $pointParams ); ?></pre>
-
-        <?php
-            $point = new Point( $pointParams );
-
-            $point->add();
-        ?>
     <?php else : ?>
-        <p>A problem occured during authentification.</p>
+        <table>
+            <tr>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Time</th>
+            </tr>
+
+            <?php foreach ($points as $key => $point) : ?>
+                <tr>
+                    <td><?= $point[ 'lat' ] ?></td>
+                    <td><?= $point[ 'lon' ] ?></td>
+                    <td><?= $point[ 'time' ] ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
     <?php endif; ?>
 </body>
 </html>

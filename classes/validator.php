@@ -1,6 +1,6 @@
 <?php
 
-class Auth
+class Validator
 {
     /**
      * Get the serial number of a device based on the informations of a point.
@@ -29,7 +29,7 @@ class Auth
      *                        values in the config AUTHORIZED_IDS.
      * @return boolean
      */
-    static function canPost( $point )
+    static function canAdd( $point )
     {
         $config = new Config();
         $serial = self::getIds( $point );
@@ -38,7 +38,38 @@ class Auth
             return true;
         }
 
-        echo 'Device NOT authorized to publish';
+        return false;
+    }
+
+    /**
+     * Test a value against a pattern.
+     *
+     * @param  mixed   $input      Whatever value or array of values
+     * @param  string  $pattern    Keyword or regular expression
+     * @param  array   $properties List of properties found in $input
+     * @return boolean
+     */
+    public function isValidEntry( $input, $pattern, $properties = null )
+    {
+        if ( $properties !== null ) {
+            $results = array();
+
+            foreach ( $properties as $property ) {
+                $results[ $property ] = $this->isValidEntry( $input[ $property ], $pattern );
+            }
+
+            return !in_array( false, $results );
+        }
+
+        if ( $pattern === 'isNumeric' ) {
+            return is_numeric( $input );
+        }
+
+        if ( $pattern === 'isTime' ) {
+            return strtotime( $input );
+        }
+
+        return preg_grep($pattern, $input);
 
         return false;
     }
