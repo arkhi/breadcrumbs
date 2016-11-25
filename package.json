@@ -1,0 +1,28 @@
+{
+  "name": "breadcrumbs",
+  "version": "1.0.0",
+  "description": "Visualize GPS coordinated",
+  "main": "index.php",
+  "dependencies": {
+    "leaflet-providers": "^1.1.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "install": "mkdir vendor; cp -ur node_modules/leaflet-providers/leaflet-providers.js vendor/leaflet-providers.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/arkhi/breadcrumbs.git"
+  },
+  "keywords": [
+    "geolocation",
+    "gps",
+    "map"
+  ],
+  "author": "Fabien Basmaison",
+  "license": "AGPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/arkhi/breadcrumbs/issues"
+  },
+  "homepage": "https://github.com/arkhi/breadcrumbs"
+}
