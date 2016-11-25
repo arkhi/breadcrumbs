@@ -31,7 +31,7 @@ class Point
     private function isValidData( $data )
     {
         $validator = new Validator();
-        $isNumeric = $validator->isValidEntry( $data, 'isNumeric', [ 'lat', 'lon', 'alt', 'spd', 'dir' ] );
+        $isNumeric = $validator->isValidEntry( $data, 'isNumeric', array( 'lat', 'lon', 'alt', 'spd', 'dir' ) );
         $isTime    = $validator->isValidEntry( $data[ 'time' ], 'isTime' );
 
         if ( $isNumeric && $isTime ) {
