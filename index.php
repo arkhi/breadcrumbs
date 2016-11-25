@@ -13,7 +13,7 @@ if ( $canAdd ) {
     $point->addPoint( $point->db, $point->data );
 } else {
     $points = $point->getPoints( $point->db );
-    $lastPoint = $points[ count( $points ) - 1 ];
+    $lastPoint = $points[ 0 ];
 }
 
 ?>
