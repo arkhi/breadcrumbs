@@ -31,7 +31,7 @@ class Point
     private function isValidData( $data )
     {
         $validator = new Validator();
-        $isNumeric = $validator->isValidEntry( $data, 'isNumeric', array( 'lat', 'lon', 'alt', 'spd', 'dir' ) );
+        $isNumeric = $validator->isValidEntry( $data, 'isNumeric', [ 'lat', 'lon', 'alt', 'spd', 'dir' ] );
         $isTime    = $validator->isValidEntry( $data[ 'time' ], 'isTime' );
 
         if ( $isNumeric && $isTime ) {
@@ -49,14 +49,14 @@ class Point
      */
     private function createPoint( $data )
     {
-        return array(
+        return [
             'lat'  => $data[ 'lat' ],
             'lon'  => $data[ 'lon' ],
             'alt'  => $data[ 'alt' ],
             'time' => $data[ 'time' ],
             'spd'  => $data[ 'spd' ],
             'dir'  => $data[ 'dir' ],
-        );
+        ];
     }
 
     /**
@@ -95,7 +95,7 @@ class Point
         $limit   = $limit  ?: config::$requestLimit;
         $request = 'SELECT * FROM points ORDER BY time DESC LIMIT ' . $limit . ' OFFSET ' . $offset;
         $result  = $db->query( $request );
-        $points  = array();
+        $points  = [];
 
         while ( $point = $result->fetchArray( SQLITE3_ASSOC ) ) {
             $points[] = $point;

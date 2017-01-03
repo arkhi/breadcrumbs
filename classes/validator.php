@@ -52,7 +52,7 @@ class Validator
     public function isValidEntry( $input, $pattern, $properties = null )
     {
         if ( $properties !== null ) {
-            $results = array();
+            $results = [];
 
             foreach ( $properties as $property ) {
                 $results[ $property ] = $this->isValidEntry( $input[ $property ], $pattern );
