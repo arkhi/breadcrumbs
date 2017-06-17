@@ -5,11 +5,19 @@ This application displays trails based on GPS coordinates provided by a third-pa
 
 ## Usage
 
-### Basic authentification
+### Configuration
+
+1. Rename `config/config.example.php` to `config/config.php`.
+1. In `config/config.php`:
+    1. Change `NAME_OF_LOCAL_DB` by the name of your choice.
+    1. Replace `DEVICE_MD5_HASH` by [the one matching your device](#generating-md5-hash).
+
+### Generating md5 hash
 
 Only IDs listed in the `$authorizedIds` array in `config/config.php` can add points to the database.
-An ID is a MD5 hash of the phone’s serial number and a string of your choice.
-To generate a MD5 hash, [replace `SERIAL_NUMBER` and `PASSWORD` in `md5 SERIAL_NUMBER PASSWORD`](https://duckduckgo.com/?q=md5+SERIAL_NUMBER+PASSWORD).
+
+* An ID is a MD5 hash of the phone’s serial number ([Android](https://support.google.com/store/answer/3333000?hl=en), [iOS](https://support.apple.com/en-us/HT204308), …) and a string of your choice.
+* To generate a MD5 hash, replace `SERIAL_NUMBER` and `PASSWORD` in [`md5 SERIAL_NUMBER PASSWORD`](https://duckduckgo.com/?q=md5+SERIAL_NUMBER+PASSWORD).
 
 ### Adding points
 

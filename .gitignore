@@ -1,4 +1,8 @@
+# folders
 node_modules/
 .vagrant/
 gpx/
-trailer.db
+
+# files
+*.db
+config/config.php
