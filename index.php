@@ -69,7 +69,10 @@ if ( $canAdd ) {
     </section>
 
     <script>
-        var map = L.map( 'map' );
+        var map = L.map( 'map', {
+            minZoom: 3,
+            maxZoom: 14
+        });
 
         // Define layers.
         var tiles = L.tileLayer.provider( 'OpenStreetMap.BlackAndWhite' );
@@ -98,7 +101,7 @@ if ( $canAdd ) {
         map.setView([
             <?= $lastPoint[ 'lat' ]; ?>,
             <?= $lastPoint[ 'lon' ]; ?>
-        ], 14);
+        ], 12);
     </script>
 </body>
 </html>
