@@ -4,15 +4,17 @@ require('config/config.php');
 require('classes/db.php');
 require('classes/validator.php');
 require('classes/point.php');
+require('classes/points.php');
 
 $pointParams = $_GET;
 $canAdd      = Validator::canAdd( $pointParams );
 $point       = new Point( $pointParams );
+$points      = new Points();
 
 if ( $canAdd ) {
     $point->addPoint( $point->db, $point->data );
 } else {
-    $points = $point->getPoints( $point->db );
+    $points = $points->getPoints( $points->db );
     $lastPoint = $points[ 0 ];
 }
 
@@ -36,6 +38,10 @@ if ( $canAdd ) {
             bottom: 0;
             left: 0;
         }
+
+        .trail {
+            stroke-dasharray: 1%;
+        }
     </style>
 </head>
 <body>
@@ -55,6 +61,7 @@ if ( $canAdd ) {
                     <th>Time</th>
                 </tr>
 
+                <?php $points = array_reverse($points); ?>
                 <?php foreach ($points as $key => $point) : ?>
                     <tr>
                         <td><?= $point[ 'lat' ] ?></td>
@@ -69,39 +76,93 @@ if ( $canAdd ) {
     </section>
 
     <script>
-        var map = L.map( 'map', {
-            minZoom: 3,
-            maxZoom: 14
-        });
+        (function() {
+            var map = L.map( 'map', {
+                minZoom: 3,
+                maxZoom: 14
+            });
 
-        // Define layers.
-        var tiles = L.tileLayer.provider( 'OpenStreetMap.BlackAndWhite' );
-        var latestLocation = L.circleMarker([
-            <?= $lastPoint[ 'lat' ]; ?>,
-            <?= $lastPoint[ 'lon' ]; ?>,
-            {
-                radius: 88
+            // Define layers.
+            var tiles = L.tileLayer.provider( 'OpenStreetMap.BlackAndWhite' );
+            var latestLocation = L.circleMarker([
+                <?= $lastPoint[ 'lat' ]; ?>,
+                <?= $lastPoint[ 'lon' ]; ?>,
+                {
+                    radius: 88
+                }
+            ]);
+            var trail = L.polyline([
+                <?php foreach ( $points as $key => $point ) : ?>
+                    [
+                        <?= $point[ 'lat' ]; ?>,
+                        <?= $point[ 'lon' ]; ?>
+                    ],
+                <?php endforeach; ?>
+            ], {
+                className: 'trail'
+            });
+
+            var dbOffset = + <?= Config::$requestOffset; ?>;
+            var previousPointsXhr;
+
+            /**
+             * Request previous points from the server.
+             */
+            function requestPreviousPoints(url, params) {
+                previousPointsXhr = new XMLHttpRequest();
+
+                if ( !previousPointsXhr ) {
+                    return false;
+                }
+
+                previousPointsXhr.onreadystatechange = addPointsToTrail;
+
+                previousPointsXhr.open( 'POST', url, true );
+                previousPointsXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                previousPointsXhr.send( params );
             }
-        ]);
-        var trail = L.polyline([
-            <?php foreach ( $points as $key => $point ) : ?>
-                [
-                    <?= $point[ 'lat' ]; ?>,
-                    <?= $point[ 'lon' ]; ?>
-                ],
-            <?php endforeach; ?>
-        ]);
 
-        // Add layers to map.
-        tiles.addTo( map )
-        trail.addTo( map );
-        latestLocation.addTo( map );
+            /**
+             * Add more points to the trail.
+             */
+            function addPointsToTrail() {
+                var response;
 
-        // Center map on the latest location.
-        map.setView([
-            <?= $lastPoint[ 'lat' ]; ?>,
-            <?= $lastPoint[ 'lon' ]; ?>
-        ], 12);
+                if ( previousPointsXhr.onreadystatuschange = XMLHttpRequest.DONE ) {
+                    if (previousPointsXhr.status === 200) {
+                        response = JSON.parse(previousPointsXhr.responseText);
+
+                        response.points.forEach(function( point ) {
+                            trail.addLatLng( [ point.lat, point.lon ] );
+                        });
+
+                        if ( response.points.length === <?= Config::$requestLimit; ?> ) {
+                            requestPreviousPoints(
+                                '/get_points.php',
+                                'dbOffset=' + ( + response.dbOffset + <?= Config::$requestLimit; ?> )
+                            );
+                        }
+                    }
+                }
+            }
+
+            // Add layers to map.
+            tiles.addTo( map )
+            trail.addTo( map );
+            latestLocation.addTo( map );
+
+            // Add previous points to polyline.
+            requestPreviousPoints(
+                '/get_points.php',
+                'dbOffset=' + dbOffset
+            );
+
+            // Center map on the latest location.
+            map.setView([
+                <?= $lastPoint[ 'lat' ]; ?>,
+                <?= $lastPoint[ 'lon' ]; ?>
+            ], 12);
+        })();
     </script>
 </body>
 </html>
