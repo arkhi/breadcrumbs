@@ -26,8 +26,8 @@ if ( $canAdd ) {
     <meta charset="utf-8">
     <title>Breadcrumbs</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="vendor/leaflet-providers.js"></script>
 
     <style>
