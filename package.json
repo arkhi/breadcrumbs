@@ -8,7 +8,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "install": "mkdir vendor; cp -ur node_modules/leaflet-providers/leaflet-providers.js vendor/leaflet-providers.js"
+    "install": "mkdir -p vendor; cp -ur node_modules/leaflet-providers/leaflet-providers.js vendor/leaflet-providers.js"
   },
   "repository": {
     "type": "git",
