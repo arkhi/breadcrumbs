@@ -26,8 +26,18 @@ if ( $canAdd ) {
     <meta charset="utf-8">
     <title>Breadcrumbs</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+        crossorigin=""
+    />
+
+    <script
+        src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+        integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+        crossorigin=""></script>
+
     <script src="vendor/leaflet-providers.js"></script>
 
     <style>
@@ -40,7 +50,15 @@ if ( $canAdd ) {
         }
 
         .trail {
-            stroke-dasharray: 1%;
+            stroke: #f00;
+            stroke-width: 2px;
+        }
+
+        .iAmHere {
+            fill: #00c;
+            fill-opacity: .25;
+            stroke: #00c;
+            stroke-width: 4px;
         }
     </style>
 </head>
@@ -78,19 +96,26 @@ if ( $canAdd ) {
     <script>
         (function() {
             var map = L.map( 'map', {
-                minZoom: 3,
-                maxZoom: 14
+                minZoom: 3
             });
 
             // Define layers.
-            var tiles = L.tileLayer.provider( 'OpenStreetMap.BlackAndWhite' );
+            var Wikimedia = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+                attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>',
+                minZoom: 1,
+                maxZoom: 19
+            });
+
             var latestLocation = L.circleMarker([
                 <?= $lastPoint[ 'lat' ]; ?>,
                 <?= $lastPoint[ 'lon' ]; ?>,
                 {
                     radius: 88
                 }
-            ]);
+            ], {
+                className: 'iAmHere'
+            });
+
             var trail = L.polyline([
                 <?php foreach ( $points as $key => $point ) : ?>
                     [
@@ -147,7 +172,7 @@ if ( $canAdd ) {
             }
 
             // Add layers to map.
-            tiles.addTo( map )
+            Wikimedia.addTo( map )
             trail.addTo( map );
             latestLocation.addTo( map );
 
