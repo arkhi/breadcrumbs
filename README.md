@@ -1,5 +1,7 @@
 # Breadcrumbs
 
+**This extension now lives in https://framagit.org/arkhi/breadcrumbs.**
+
 This application displays trails based on GPS coordinates provided by a third-part service.
 
 
